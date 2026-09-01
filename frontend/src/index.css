@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@theme {
+  --color-teal-700: #0f6e6e;
+  --color-teal-800: #0c5959;
+}
