@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, ShieldPlus } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
+import logo from "../../assets/logo.png";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [role, setRole] = useState("doctor");
+  const [role, setRole] = useState("admin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -15,19 +16,42 @@ export default function Login() {
       alert("Please enter email and password");
       return;
     }
-    alert(`Signed in as ${role}: ${email}`);
-    navigate("/signup"); // temporary - change later when dashboard exists
+
+    const roleLabels = {
+      admin: "Super Admin",
+      doctor: "Doctor",
+      staff: "Staff",
+    };
+    localStorage.setItem(
+      "sutrasync_user",
+      JSON.stringify({
+        name: role === "doctor" ? "Dr. Rajesh Sharma" : "Admin User",
+        role: roleLabels[role],
+        email,
+      }),
+    );
+    if (role === "admin") {
+      navigate("/dashboard");
+    } else if (role === "doctor") {
+      navigate("/doctor-dashboard");
+    } else {
+      alert("Staff portal isn't built yet.");
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-sm p-8">
         <div className="flex flex-col items-center mb-6">
-          <div className="flex items-center gap-2 mb-1">
-            <ShieldPlus className="text-teal-700" size={28} />
-            <span className="text-xl font-bold text-teal-700">
-              CityCare{" "}
-              <span className="font-medium text-gray-700">Hospital</span>
+          <img
+            src={logo}
+            alt="Sutra Sync Hospital logo"
+            className="w-12 h-12 mb-2"
+          />
+          <div className="flex flex-col items-center leading-none">
+            <span className="text-2xl font-bold text-blue-700">Sutra Sync</span>
+            <span className="text-base font-medium text-gray-700 mt-0.5">
+              Hospital
             </span>
           </div>
         </div>
@@ -38,28 +62,20 @@ export default function Login() {
         </p>
 
         <div className="flex border border-gray-300 rounded-lg overflow-hidden mb-6">
-          <button
-            type="button"
-            onClick={() => setRole("doctor")}
-            className={`flex-1 py-2 font-medium transition ${
-              role === "doctor"
-                ? "border-2 border-teal-700 text-teal-700 rounded-lg"
-                : "text-gray-600"
-            }`}
-          >
-            Doctor
-          </button>
-          <button
-            type="button"
-            onClick={() => setRole("staff")}
-            className={`flex-1 py-2 font-medium transition ${
-              role === "staff"
-                ? "border-2 border-teal-700 text-teal-700 rounded-lg"
-                : "text-gray-600"
-            }`}
-          >
-            Staff
-          </button>
+          {["admin", "doctor", "staff"].map((r) => (
+            <button
+              key={r}
+              type="button"
+              onClick={() => setRole(r)}
+              className={`flex-1 py-2 font-medium text-sm transition capitalize ${
+                role === r
+                  ? "border-2 border-blue-700 text-blue-700 rounded-lg"
+                  : "text-gray-600"
+              }`}
+            >
+              {r}
+            </button>
+          ))}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -67,14 +83,14 @@ export default function Login() {
             <label className="block text-sm font-medium mb-1">
               Email Address
             </label>
-            <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-teal-700">
+            <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-blue-700">
               <Mail size={18} className="text-gray-400 mr-2" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="dr.sharma@citycare.com"
+                placeholder="admin@sutrasync.com"
                 className="w-full outline-none text-sm"
               />
             </div>
@@ -82,7 +98,7 @@ export default function Login() {
 
           <div>
             <label className="block text-sm font-medium mb-1">Password</label>
-            <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-teal-700">
+            <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-blue-700">
               <Lock size={18} className="text-gray-400 mr-2" />
               <input
                 type="password"
@@ -104,14 +120,14 @@ export default function Login() {
               />
               Remember Me
             </label>
-            <Link to="/forgot-password" className="text-teal-700 underline">
+            <Link to="/forgot-password" className="text-blue-700 underline">
               Forgot password?
             </Link>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-teal-700 text-white py-3 rounded-lg font-semibold hover:bg-teal-800 transition"
+            className="w-full bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition"
           >
             Sign In
           </button>
@@ -119,7 +135,7 @@ export default function Login() {
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-teal-700 underline">
+          <Link to="/signup" className="text-blue-700 underline">
             Sign Up
           </Link>
         </p>
