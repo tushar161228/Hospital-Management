@@ -13,10 +13,15 @@ export default function DoctorDashboard() {
         <DoctorTopbar onMenuClick={() => setSidebarOpen((o) => !o)} />
 
         <main className="p-6">
-          <h1 className="text-2xl font-bold text-gray-800">Good morning, Dr. Rajesh Sharma 👋</h1>
-          <p className="text-gray-500 mt-1">Here's what's happening in your clinic today.</p>
+          <h1 className="text-2xl font-bold text-gray-800">
+            Good morning, Dr. Rajesh Sharma 👋
+          </h1>
+          <p className="text-gray-500 mt-1">
+            Here's what's happening in your clinic today.
+          </p>
           <p className="text-sm text-gray-400 mt-6">
-            Remaining widgets (schedule, queue, prescriptions, etc.) will render here once built.
+            Remaining widgets (schedule, queue, prescriptions, etc.) will render
+            here once built.
           </p>
         </main>
       </div>
