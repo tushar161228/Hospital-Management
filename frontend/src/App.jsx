@@ -3,6 +3,7 @@ import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import Dashboard from "./pages/Dashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
+import DoctorManagement from "./pages/DoctorManagement";
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
+        <Route path="/doctors" element={<DoctorManagement />} />
       </Routes>
     </BrowserRouter>
   );
