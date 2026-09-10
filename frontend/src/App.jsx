@@ -18,6 +18,8 @@ import ReportsAnalytics from "./pages/ReportsAnalytics";
 import RolesPermissions from "./pages/RolesPermissions";
 import SettingsPage from "./pages/SettingsPage";
 import NotificationsManagement from "./pages/NotificationsManagement";
+import UserManagement from "./pages/UserManagement";
+import SystemLogs from "./pages/SystemLogs";
 
 export default function App() {
   return (
@@ -43,6 +45,8 @@ export default function App() {
         <Route path="/roles" element={<RolesPermissions />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/communication" element={<NotificationsManagement />} />
+        <Route path="/users" element={<UserManagement />} />
+        <Route path="/logs" element={<SystemLogs />} />
       </Routes>
     </BrowserRouter>
   );
