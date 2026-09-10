@@ -24,6 +24,7 @@ import {
   UserPlus,
   ClipboardPlus,
   FilePlus,
+  FileText,
 } from "lucide-react";
 import logo from "../../assets/logo.png";
 import { sidebarNav } from "../../data/dashboardData";
@@ -47,6 +48,7 @@ const iconMap = {
   Settings,
   FileClock,
   DatabaseBackup,
+  FileText,
 };
 
 const quickActions = [

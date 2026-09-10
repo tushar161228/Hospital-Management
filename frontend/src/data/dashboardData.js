@@ -92,7 +92,7 @@ export const appointmentsOverview = [
 ];
 
 export const revenueBreakdown = [
-  { name: "OPD", value: 1045230, percent: 42, color: "#1d4ed8" },  // was #0f6e6e
+  { name: "OPD", value: 1045230, percent: 42, color: "#1d4ed8" }, // was #0f6e6e
   { name: "IPD", value: 875400, percent: 35, color: "#3b82f6" },
   { name: "Pharmacy", value: 320600, percent: 13, color: "#f59e0b" },
   { name: "Lab", value: 185760, percent: 7, color: "#22c55e" },
@@ -203,7 +203,6 @@ export const recentActivities = [
     icon: "patient",
   },
 ];
-
 export const sidebarNav = [
   { label: "Dashboard", icon: "LayoutDashboard", path: "/dashboard" },
   { label: "Doctor Management", icon: "Stethoscope", path: "/doctors" },
@@ -216,6 +215,7 @@ export const sidebarNav = [
   { label: "Laboratory", icon: "FlaskConical", path: "/laboratory" },
   { label: "Radiology", icon: "Scan", path: "/radiology" },
   { label: "Schedule & Timetable", icon: "CalendarDays", path: "/schedule" },
+  { label: "Prescriptions", icon: "FileText", path: "/prescriptions" },
   { label: "Reports & Analytics", icon: "BarChart3", path: "/reports" },
   { label: "Communication", icon: "MessageSquare", path: "/communication" },
   { label: "User Management", icon: "UserCircle", path: "/users" },
