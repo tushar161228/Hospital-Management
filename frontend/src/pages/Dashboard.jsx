@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Download, ChevronDown, Calendar } from "lucide-react";
 import Sidebar from "../components/dashboard/Sidebar";
 import Topbar from "../components/dashboard/Topbar";
 import StatCard from "../components/dashboard/StatCard";
@@ -9,11 +10,18 @@ import DepartmentOverview from "../components/dashboard/DepartmentOverview";
 import EmergencyCases from "../components/dashboard/EmergencyCases";
 import RecentActivities from "../components/dashboard/RecentActivities";
 import { statCards } from "../data/dashboardData";
-import { Download, ChevronDown, Calendar } from "lucide-react";
 
 export default function Dashboard() {
-  const [dateLabel] = useState("27 May 2026");
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0],
+  );
   const user = JSON.parse(localStorage.getItem("sutrasync_user") || "null");
+
+  const formattedDate = new Date(selectedDate).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 
   const handleQuickAction = (action) => {
     const messages = {
@@ -24,6 +32,7 @@ export default function Dashboard() {
     };
     alert(messages[action] || action);
   };
+
   const handleExportReport = () => {
     const headers = ["Metric", "Value", "Change"];
     const rows = statCards.map((c) => [c.label, c.value, c.change]);
@@ -35,13 +44,14 @@ export default function Dashboard() {
     link.href = url;
     link.setAttribute(
       "download",
-      `sutrasync-dashboard-report-${dateLabel.replace(/\s/g, "-")}.csv`,
+      `sutrasync-dashboard-report-${formattedDate.replace(/\s/g, "-")}.csv`,
     );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
+
   return (
     <div className="flex bg-gray-50 min-h-screen">
       <Sidebar onQuickAction={handleQuickAction} />
@@ -58,14 +68,20 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 bg-white">
+              <div className="relative flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 bg-white">
                 <Calendar size={15} />
-                {dateLabel}
+                {formattedDate}
                 <ChevronDown size={14} />
-              </button>
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="absolute inset-0 opacity-0 cursor-pointer w-full"
+                />
+              </div>
               <button
                 onClick={handleExportReport}
-                className="flex items-center gap-2 bg-teal-700 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-teal-800 transition"
+                className="flex items-center gap-2 bg-blue-700 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-blue-800 transition"
               >
                 <Download size={15} />
                 Export Report
@@ -94,8 +110,8 @@ export default function Dashboard() {
           </div>
 
           {/* Bottom row */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div className="lg:col-span-1">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+            <div className="lg:col-span-2">
               <TodaysAppointments />
             </div>
             <div className="lg:col-span-1">

@@ -104,7 +104,6 @@ export default function Topbar({ user, onMenuClick }) {
         </div>
 
         <div className="flex items-center gap-5 ml-4">
-          {/* Notifications */}
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => setNotifOpen((o) => !o)}
@@ -136,7 +135,6 @@ export default function Topbar({ user, onMenuClick }) {
             )}
           </div>
 
-          {/* Messages */}
           <div className="relative" ref={msgRef}>
             <button
               onClick={() => setMsgOpen((o) => !o)}
@@ -178,7 +176,6 @@ export default function Topbar({ user, onMenuClick }) {
             <Calendar size={20} />
           </button>
 
-          {/* Profile */}
           <div className="relative" ref={profileRef}>
             <button
               onClick={() => setProfileMenuOpen((p) => !p)}
@@ -190,9 +187,6 @@ export default function Topbar({ user, onMenuClick }) {
               <div className="text-left hidden sm:block">
                 <div className="text-sm font-semibold text-gray-800">
                   {user?.name || "Admin User"}
-                </div>
-                <div className="text-xs text-gray-400">
-                  {user?.role || "Super Admin"}
                 </div>
               </div>
               <ChevronDown size={16} className="text-gray-400" />

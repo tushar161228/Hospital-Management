@@ -1,77 +1,37 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard,
-  Stethoscope,
-  Users,
-  CalendarClock,
-  UserCog,
-  Building2,
-  Receipt,
-  Pill,
-  FlaskConical,
-  Scan,
-  CalendarDays,
-  BarChart3,
-  MessageSquare,
-  UserCircle,
-  ShieldCheck,
-  Settings,
-  FileClock,
-  DatabaseBackup,
-  ChevronRight,
-  Plus,
-  UserPlus,
-  ClipboardPlus,
-  FilePlus,
-  FileText,
+  LayoutDashboard, Stethoscope, Users, CalendarClock, UserCog, Building2,
+  Receipt, Pill, FlaskConical, Scan, CalendarDays, BarChart3, MessageSquare,
+  UserCircle, ShieldCheck, Settings, FileClock, DatabaseBackup, ChevronRight,
+  Plus, UserPlus, ClipboardPlus, FilePlus, FileText,
 } from "lucide-react";
 import logo from "../../assets/logo.png";
 import { sidebarNav } from "../../data/dashboardData";
 
 const iconMap = {
-  LayoutDashboard,
-  Stethoscope,
-  Users,
-  CalendarClock,
-  UserCog,
-  Building2,
-  Receipt,
-  Pill,
-  FlaskConical,
-  Scan,
-  CalendarDays,
-  BarChart3,
-  MessageSquare,
-  UserCircle,
-  ShieldCheck,
-  Settings,
-  FileClock,
-  DatabaseBackup,
-  FileText,
+  LayoutDashboard, Stethoscope, Users, CalendarClock, UserCog, Building2,
+  Receipt, Pill, FlaskConical, Scan, CalendarDays, BarChart3, MessageSquare,
+  UserCircle, ShieldCheck, Settings, FileClock, DatabaseBackup, FileText,
 };
 
 const quickActions = [
-  { label: "Add New Doctor", icon: UserPlus, action: "add-doctor" },
-  {
-    label: "Book Appointment",
-    icon: CalendarClock,
-    action: "book-appointment",
-  },
-  { label: "Add New Patient", icon: ClipboardPlus, action: "add-patient" },
-  { label: "Create Invoice", icon: FilePlus, action: "create-invoice" },
+  { label: "Add New Doctor", icon: UserPlus, path: "/doctors" },
+  { label: "Book Appointment", icon: CalendarClock, path: "/appointments" },
+  { label: "Add New Patient", icon: ClipboardPlus, path: "/patients" },
+  { label: "Create Invoice", icon: FilePlus, path: "/billing" },
 ];
 
-export default function Sidebar({ onQuickAction }) {
+export default function Sidebar() {
+  const navigate = useNavigate();
+
   return (
     <aside className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
       <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-200">
         <img src={logo} alt="Sutra Sync logo" className="w-9 h-9 shrink-0" />
         <div className="flex flex-col leading-none">
-          <span className="text-lg font-bold text-teal-700">Sutra Sync</span>
-          <span className="text-xs font-medium text-gray-500 mt-0.5">
-            Hospital
-          </span>
+          <span className="text-lg font-bold text-blue-700">Sutra Sync</span>
+          <span className="text-xs font-medium text-gray-500 mt-0.5">Hospital</span>
         </div>
       </div>
 
@@ -102,16 +62,14 @@ export default function Sidebar({ onQuickAction }) {
 
       <div className="border-t border-gray-200 p-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-gray-700">
-            Quick Actions
-          </span>
+          <span className="text-sm font-semibold text-gray-700">Quick Actions</span>
           <Plus size={16} className="text-gray-400" />
         </div>
         <div className="space-y-1">
           {quickActions.map((qa) => (
             <button
-              key={qa.action}
-              onClick={() => onQuickAction?.(qa.action)}
+              key={qa.label}
+              onClick={() => navigate(qa.path, { state: { openAdd: true } })}
               className="w-full flex items-center gap-2 px-2 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition"
             >
               <qa.icon size={16} className="text-blue-700" />

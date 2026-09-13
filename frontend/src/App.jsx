@@ -20,6 +20,12 @@ import SettingsPage from "./pages/SettingsPage";
 import NotificationsManagement from "./pages/NotificationsManagement";
 import UserManagement from "./pages/UserManagement";
 import SystemLogs from "./pages/SystemLogs";
+import HospitalManagementPage from "./pages/HospitalManagementPage";
+import DoctorAppointments from "./pages/DoctorAppointments";
+import DoctorQueue from "./pages/DoctorQueue";
+import DoctorConsultation from "./pages/DoctorConsultation";
+import DoctorPatients from "./pages/DoctorPatients";
+import DoctorPrescriptions from "./pages/DoctorPrescriptions";
 
 export default function App() {
   return (
@@ -47,6 +53,12 @@ export default function App() {
         <Route path="/communication" element={<NotificationsManagement />} />
         <Route path="/users" element={<UserManagement />} />
         <Route path="/logs" element={<SystemLogs />} />
+        <Route path="/doctor/appointments" element={<DoctorAppointments />} />
+        <Route path="/hospital" element={<HospitalManagementPage />} />
+        <Route path="/doctor/queue" element={<DoctorQueue />} />
+        <Route path="/doctor/patients" element={<DoctorPatients />} />
+        <Route path="/doctor/consultation" element={<DoctorConsultation />} />
+        <Route path="/doctor/prescriptions" element={<DoctorPrescriptions />} />
       </Routes>
     </BrowserRouter>
   );

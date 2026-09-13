@@ -222,5 +222,4 @@ export const sidebarNav = [
   { label: "Roles & Permissions", icon: "ShieldCheck", path: "/roles" },
   { label: "Settings", icon: "Settings", path: "/settings" },
   { label: "System Logs", icon: "FileClock", path: "/logs" },
-  { label: "Backup & Restore", icon: "DatabaseBackup", path: "/backup" },
 ];

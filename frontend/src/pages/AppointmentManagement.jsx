@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar";
 import Topbar from "../components/dashboard/Topbar";
 import AppointmentFilters from "../components/appointment-management/AppointmentFilters";
@@ -17,7 +18,14 @@ export default function AppointmentManagement() {
   const [formOpen, setFormOpen] = useState(false);
   const [cancelTarget, setCancelTarget] = useState(null);
 
+  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("sutrasync_user") || "null");
+
+  useEffect(() => {
+    if (location.state?.openAdd) {
+      setFormOpen(true);
+    }
+  }, [location.state]);
 
   const filtered = appointments.filter((a) => {
     const matchesSearch =

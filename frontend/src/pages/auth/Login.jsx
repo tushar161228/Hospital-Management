@@ -17,11 +17,7 @@ export default function Login() {
       return;
     }
 
-    const roleLabels = {
-      admin: "Super Admin",
-      doctor: "Doctor",
-      staff: "Staff",
-    };
+    const roleLabels = { admin: "Admin", doctor: "Doctor", staff: "Staff" };
     localStorage.setItem(
       "sutrasync_user",
       JSON.stringify({

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar";
 import Topbar from "../components/dashboard/Topbar";
 import DoctorFilters from "../components/doctor-management/DoctorFilters";
@@ -13,10 +14,17 @@ export default function DoctorManagement() {
   const [department, setDepartment] = useState("");
   const [status, setStatus] = useState("");
 
-  const [formModal, setFormModal] = useState(null); // { mode: "add" | "edit", doctor }
+  const [formModal, setFormModal] = useState(null);
   const [viewDoctor, setViewDoctor] = useState(null);
 
+  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("sutrasync_user") || "null");
+
+  useEffect(() => {
+    if (location.state?.openAdd) {
+      setFormModal({ mode: "add", doctor: null });
+    }
+  }, [location.state]);
 
   const filteredDoctors = doctors.filter((d) => {
     const matchesSearch =

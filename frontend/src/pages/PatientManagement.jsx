@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar";
 import Topbar from "../components/dashboard/Topbar";
 import PatientFilters from "../components/patient-management/PatientFilters";
@@ -16,7 +17,14 @@ export default function PatientManagement() {
   const [formModal, setFormModal] = useState(null);
   const [viewPatient, setViewPatient] = useState(null);
 
+  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("sutrasync_user") || "null");
+
+  useEffect(() => {
+    if (location.state?.openAdd) {
+      setFormModal({ mode: "add", patient: null });
+    }
+  }, [location.state]);
 
   const filteredPatients = patients.filter((p) => {
     const matchesSearch =
@@ -41,10 +49,8 @@ export default function PatientManagement() {
   const handleToggleStatus = (patient) => {
     setPatients((prev) =>
       prev.map((p) =>
-        p.id === patient.id
-          ? { ...p, status: p.status === "Active" ? "Inactive" : "Active" }
-          : p,
-      ),
+        p.id === patient.id ? { ...p, status: p.status === "Active" ? "Inactive" : "Active" } : p
+      )
     );
   };
 
@@ -67,12 +73,8 @@ export default function PatientManagement() {
 
         <main className="p-6">
           <div className="mb-5">
-            <h1 className="text-2xl font-bold text-gray-800">
-              Patient Management
-            </h1>
-            <p className="text-sm text-gray-400 mt-0.5">
-              Home &gt; Patient Management
-            </p>
+            <h1 className="text-2xl font-bold text-gray-800">Patient Management</h1>
+            <p className="text-sm text-gray-400 mt-0.5">Home &gt; Patient Management</p>
           </div>
 
           <PatientFilters
@@ -107,10 +109,7 @@ export default function PatientManagement() {
       )}
 
       {viewPatient && (
-        <PatientViewModal
-          patient={viewPatient}
-          onClose={() => setViewPatient(null)}
-        />
+        <PatientViewModal patient={viewPatient} onClose={() => setViewPatient(null)} />
       )}
     </div>
   );

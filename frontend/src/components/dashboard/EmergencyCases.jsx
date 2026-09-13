@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { emergencyCases } from "../../data/dashboardData";
 
 const priorityStyles = {
@@ -6,18 +7,18 @@ const priorityStyles = {
 };
 
 export default function EmergencyCases() {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-semibold text-gray-800">Emergency Cases</h3>
         <button
-          onClick={() =>
-            alert("This would navigate to the full Appointments list page")
-          }
-          className="text-sm text-teal-700 font-medium hover:underline"
+          onClick={() => navigate("/appointments")}
+          className="text-sm text-blue-700 font-medium hover:underline"
         >
           View All
-        </button>{" "}
+        </button>
       </div>
       <div className="space-y-3">
         {emergencyCases.map((c) => (

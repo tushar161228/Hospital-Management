@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar";
 import Topbar from "../components/dashboard/Topbar";
 import InvoiceFilters from "../components/billing-management/InvoiceFilters";
@@ -14,7 +15,14 @@ export default function BillingManagement() {
   const [formOpen, setFormOpen] = useState(false);
   const [viewInvoice, setViewInvoice] = useState(null);
 
+  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("sutrasync_user") || "null");
+
+  useEffect(() => {
+    if (location.state?.openAdd) {
+      setFormOpen(true);
+    }
+  }, [location.state]);
 
   const filtered = invoices.filter((inv) => {
     const matchesSearch =
