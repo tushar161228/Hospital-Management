@@ -26,6 +26,9 @@ import DoctorQueue from "./pages/DoctorQueue";
 import DoctorConsultation from "./pages/DoctorConsultation";
 import DoctorPatients from "./pages/DoctorPatients";
 import DoctorPrescriptions from "./pages/DoctorPrescriptions";
+import DoctorLabOrders from "./pages/DoctorLabOrders";
+import DoctorRadiology from "./pages/DoctorRadiology";
+import DoctorSchedule from "./pages/DoctorSchedule";
 
 export default function App() {
   return (
@@ -59,6 +62,9 @@ export default function App() {
         <Route path="/doctor/patients" element={<DoctorPatients />} />
         <Route path="/doctor/consultation" element={<DoctorConsultation />} />
         <Route path="/doctor/prescriptions" element={<DoctorPrescriptions />} />
+        <Route path="/doctor/lab-orders" element={<DoctorLabOrders />} />
+        <Route path="/doctor/radiology" element={<DoctorRadiology />} />
+        <Route path="/doctor/schedule" element={<DoctorSchedule />} />
       </Routes>
     </BrowserRouter>
   );
