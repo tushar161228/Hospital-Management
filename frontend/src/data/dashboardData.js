@@ -223,3 +223,10 @@ export const sidebarNav = [
   { label: "Settings", icon: "Settings", path: "/settings" },
   { label: "System Logs", icon: "FileClock", path: "/logs" },
 ];
+
+export const doctorProfile = {
+  specialization: "Cardiologist",
+  qualifications: "MBBS, MD, DM (Cardiology)",
+  status: "Available",
+  photo: null,
+};

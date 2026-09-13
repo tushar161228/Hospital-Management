@@ -1,9 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Menu, Search, ChevronDown, AlertTriangle, Bell } from "lucide-react";
-import {
-  doctorProfile,
-  doctorNotifications,
-} from "../../data/doctorDashboardData";
+import { doctorProfile, doctorNotifications } from "../../data/doctorDashboardData";
 
 const statusOptions = ["Available", "In Consultation", "On Break", "Offline"];
 const statusDot = {
@@ -14,6 +11,9 @@ const statusDot = {
 };
 
 export default function DoctorTopbar({ onMenuClick }) {
+  const user = JSON.parse(localStorage.getItem("sutrasync_user") || "null");
+  const doctorName = user?.name || "Doctor";
+
   const [status, setStatus] = useState(doctorProfile.status);
   const [statusOpen, setStatusOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -24,10 +24,8 @@ export default function DoctorTopbar({ onMenuClick }) {
 
   useEffect(() => {
     const handler = (e) => {
-      if (statusRef.current && !statusRef.current.contains(e.target))
-        setStatusOpen(false);
-      if (notifRef.current && !notifRef.current.contains(e.target))
-        setNotifOpen(false);
+      if (statusRef.current && !statusRef.current.contains(e.target)) setStatusOpen(false);
+      if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -35,8 +33,7 @@ export default function DoctorTopbar({ onMenuClick }) {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (search.trim())
-      alert(`Searching for "${search}" by name, UHID, phone, or visit ID...`);
+    if (search.trim()) alert(`Searching for "${search}" by name, UHID, phone, or visit ID...`);
   };
 
   const handleEmergency = () => {
@@ -48,21 +45,13 @@ export default function DoctorTopbar({ onMenuClick }) {
   return (
     <header className="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200 sticky top-0 z-10">
       <div className="flex items-center gap-4">
-        <button
-          onClick={onMenuClick}
-          className="text-gray-500 hover:text-gray-700 lg:hidden"
-        >
+        <button onClick={onMenuClick} className="text-gray-500 hover:text-gray-700 lg:hidden">
           <Menu size={22} />
         </button>
-        <h2 className="font-semibold text-gray-800 hidden sm:block">
-          Dashboard
-        </h2>
+        <h2 className="font-semibold text-gray-900 hidden sm:block">Dashboard</h2>
       </div>
 
-      <form
-        onSubmit={handleSearch}
-        className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 flex-1 max-w-md mx-6"
-      >
+      <form onSubmit={handleSearch} className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 flex-1 max-w-md mx-6">
         <Search size={16} className="text-gray-400" />
         <input
           type="text"
@@ -71,9 +60,7 @@ export default function DoctorTopbar({ onMenuClick }) {
           placeholder="Search patients by name, UHID, phone, visit ID..."
           className="bg-transparent outline-none text-sm w-full"
         />
-        <kbd className="text-xs text-gray-400 bg-white border border-gray-200 rounded px-1.5 py-0.5">
-          ⌘K
-        </kbd>
+        <kbd className="text-xs text-gray-400 bg-white border border-gray-200 rounded px-1.5 py-0.5">⌘K</kbd>
       </form>
 
       <div className="flex items-center gap-4">
@@ -95,7 +82,7 @@ export default function DoctorTopbar({ onMenuClick }) {
                     setStatus(s);
                     setStatusOpen(false);
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50"
+                  className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
                 >
                   <span className={`w-2 h-2 rounded-full ${statusDot[s]}`} />
                   {s}
@@ -114,10 +101,7 @@ export default function DoctorTopbar({ onMenuClick }) {
         </button>
 
         <div className="relative" ref={notifRef}>
-          <button
-            onClick={() => setNotifOpen((o) => !o)}
-            className="relative text-gray-500 hover:text-gray-700"
-          >
+          <button onClick={() => setNotifOpen((o) => !o)} className="relative text-gray-500 hover:text-gray-700">
             <Bell size={20} />
             <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
               {doctorNotifications.length}
@@ -125,16 +109,13 @@ export default function DoctorTopbar({ onMenuClick }) {
           </button>
           {notifOpen && (
             <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-20">
-              <div className="px-4 py-1.5 text-sm font-semibold text-gray-700 border-b border-gray-100">
+              <div className="px-4 py-1.5 text-sm font-semibold text-gray-800 border-b border-gray-100">
                 Notifications
               </div>
               {doctorNotifications.slice(0, 4).map((n, i) => (
-                <div
-                  key={i}
-                  className="px-4 py-2.5 hover:bg-gray-50 border-b border-gray-50 last:border-0"
-                >
-                  <p className="text-sm text-gray-700">{n.text}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{n.meta}</p>
+                <div key={i} className="px-4 py-2.5 hover:bg-gray-50 border-b border-gray-50 last:border-0">
+                  <p className="text-sm text-gray-800">{n.text}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{n.meta}</p>
                 </div>
               ))}
               <button className="w-full text-center text-sm text-blue-700 font-medium py-2">
@@ -146,15 +127,11 @@ export default function DoctorTopbar({ onMenuClick }) {
 
         <div className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-full bg-blue-700 text-white flex items-center justify-center text-sm font-semibold">
-            {doctorProfile.name.replace("Dr. ", "").charAt(0)}
+            {doctorName.replace("Dr. ", "").charAt(0)}
           </div>
           <div className="hidden sm:block">
-            <p className="text-sm font-semibold text-gray-800 leading-none">
-              {doctorProfile.name}
-            </p>
-            <p className="text-xs text-gray-400 mt-0.5">
-              {doctorProfile.specialization}
-            </p>
+            <p className="text-sm font-semibold text-gray-900 leading-none">{doctorName}</p>
+            <p className="text-xs text-gray-500 mt-0.5">{doctorProfile.specialization}</p>
           </div>
         </div>
       </div>

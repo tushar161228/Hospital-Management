@@ -17,21 +17,19 @@ export default function Login() {
       return;
     }
 
-    const roleLabels = { admin: "Admin", doctor: "Doctor", staff: "Staff" };
+    const roleLabels = { admin: "Admin", doctor: "Doctor" };
+    const nameFromEmail = email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    const displayName = role === "doctor" ? `Dr. ${nameFromEmail}` : "Admin User";
+
     localStorage.setItem(
       "sutrasync_user",
-      JSON.stringify({
-        name: role === "doctor" ? "Dr. Rajesh Sharma" : "Admin User",
-        role: roleLabels[role],
-        email,
-      }),
+      JSON.stringify({ name: displayName, role: roleLabels[role], email })
     );
+
     if (role === "admin") {
       navigate("/dashboard");
     } else if (role === "doctor") {
       navigate("/doctor-dashboard");
-    } else {
-      alert("Staff portal isn't built yet.");
     }
   };
 
@@ -39,16 +37,10 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-sm p-8">
         <div className="flex flex-col items-center mb-6">
-          <img
-            src={logo}
-            alt="Sutra Sync Hospital logo"
-            className="w-12 h-12 mb-2"
-          />
+          <img src={logo} alt="Sutra Sync Hospital logo" className="w-12 h-12 mb-2" />
           <div className="flex flex-col items-center leading-none">
             <span className="text-2xl font-bold text-blue-700">Sutra Sync</span>
-            <span className="text-base font-medium text-gray-700 mt-0.5">
-              Hospital
-            </span>
+            <span className="text-base font-medium text-gray-700 mt-0.5">Hospital</span>
           </div>
         </div>
 
@@ -58,7 +50,7 @@ export default function Login() {
         </p>
 
         <div className="flex border border-gray-300 rounded-lg overflow-hidden mb-6">
-          {["admin", "doctor", "staff"].map((r) => (
+          {["admin", "doctor"].map((r) => (
             <button
               key={r}
               type="button"
@@ -76,9 +68,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Email Address
-            </label>
+            <label className="block text-sm font-medium mb-1">Email Address</label>
             <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-blue-700">
               <Mail size={18} className="text-gray-400 mr-2" />
               <input

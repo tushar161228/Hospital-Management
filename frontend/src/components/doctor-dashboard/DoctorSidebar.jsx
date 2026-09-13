@@ -50,7 +50,7 @@ export default function DoctorSidebar({ notificationCount = 12 }) {
         />
         <div className="flex flex-col leading-none">
           <span className="text-base font-bold text-blue-700">Sutra Sync</span>
-          <span className="text-xs font-medium text-gray-500 mt-0.5">
+          <span className="text-xs font-medium text-gray-600 mt-0.5">
             Hospital
           </span>
         </div>
@@ -69,7 +69,7 @@ export default function DoctorSidebar({ notificationCount = 12 }) {
                 `flex items-center gap-3 px-5 py-2.5 mx-2 rounded-lg text-sm font-medium transition ${
                   isActive
                     ? "bg-blue-700 text-white"
-                    : "text-gray-600 hover:bg-gray-100"
+                    : "text-gray-700 hover:bg-gray-100"
                 }`
               }
             >
@@ -81,7 +81,7 @@ export default function DoctorSidebar({ notificationCount = 12 }) {
 
         <button
           onClick={() => alert("Notifications page would open here")}
-          className="w-full flex items-center justify-between gap-3 px-5 py-2.5 mx-0 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"
+          className="w-full flex items-center justify-between gap-3 px-5 py-2.5 mx-0 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
         >
           <span className="flex items-center gap-3">
             <Bell size={18} />
@@ -96,7 +96,7 @@ export default function DoctorSidebar({ notificationCount = 12 }) {
 
         <button
           onClick={() => alert("Profile & Settings page would open here")}
-          className="w-full flex items-center gap-3 px-5 py-2.5 mx-0 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"
+          className="w-full flex items-center gap-3 px-5 py-2.5 mx-0 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
         >
           <Settings size={18} />
           Profile & Settings
@@ -106,7 +106,7 @@ export default function DoctorSidebar({ notificationCount = 12 }) {
       <div className="border-t border-gray-100 p-2">
         <button
           onClick={() => alert("Help & Support would open here")}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
         >
           <HelpCircle size={18} />
           Help & Support

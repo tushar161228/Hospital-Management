@@ -12,6 +12,9 @@ const statusDot = {
 };
 
 export default function DoctorProfileCard() {
+  const user = JSON.parse(localStorage.getItem("sutrasync_user") || "null");
+  const doctorName = user?.name || "Doctor";
+
   const [status, setStatus] = useState(doctorProfile.status);
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -29,15 +32,15 @@ export default function DoctorProfileCard() {
       <div className="flex items-center gap-3 mb-3">
         <div className="w-12 h-12 rounded-full bg-blue-700 text-white flex items-center justify-center text-lg font-semibold shrink-0 overflow-hidden">
           {doctorProfile.photo ? (
-            <img src={doctorProfile.photo} alt={doctorProfile.name} className="w-full h-full object-cover" />
+            <img src={doctorProfile.photo} alt={doctorName} className="w-full h-full object-cover" />
           ) : (
-            doctorProfile.name.replace("Dr. ", "").charAt(0)
+            doctorName.replace("Dr. ", "").charAt(0)
           )}
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-bold text-gray-800 truncate">{doctorProfile.name}</p>
-          <p className="text-xs text-gray-500">{doctorProfile.specialization}</p>
-          <p className="text-xs text-gray-400">{doctorProfile.qualifications}</p>
+          <p className="text-sm font-bold text-gray-900 truncate">{doctorName}</p>
+          <p className="text-xs text-gray-600">{doctorProfile.specialization}</p>
+          <p className="text-xs text-gray-500">{doctorProfile.qualifications}</p>
         </div>
       </div>
 
@@ -62,7 +65,7 @@ export default function DoctorProfileCard() {
                   setStatus(s);
                   setOpen(false);
                 }}
-                className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50"
+                className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
               >
                 <span className={`w-2 h-2 rounded-full ${statusDot[s]}`} />
                 {s}

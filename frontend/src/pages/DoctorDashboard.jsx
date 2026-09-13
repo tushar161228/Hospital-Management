@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Calendar } from "lucide-react";
+import LiveClock from "../components/doctor-dashboard/LiveClock";
 import DoctorSidebar from "../components/doctor-dashboard/DoctorSidebar";
 import DoctorTopbar from "../components/doctor-dashboard/DoctorTopbar";
 import DoctorStatCard from "../components/doctor-dashboard/DoctorStatCard";
@@ -11,10 +10,10 @@ import RecentPrescriptions from "../components/doctor-dashboard/RecentPrescripti
 import DoctorNotifications from "../components/doctor-dashboard/DoctorNotifications";
 import AvailabilityTracker from "../components/doctor-dashboard/AvailabilityTracker";
 import DoctorQuickActions from "../components/doctor-dashboard/DoctorQuickActions";
-import { doctorProfile, doctorStats } from "../data/doctorDashboardData";
+import { doctorStats } from "../data/doctorDashboardData";
 
 export default function DoctorDashboard() {
-  const [dateLabel] = useState("27 May 2026, Wednesday");
+  const user = JSON.parse(localStorage.getItem("sutrasync_user") || "null");
 
   const handleStatLinkClick = (link) => {
     const messages = {
@@ -49,15 +48,12 @@ export default function DoctorDashboard() {
         <main className="p-6">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">
-                Good morning, {doctorProfile.name} 👋
+              <h1 className="text-2xl font-bold text-gray-900">
+                Good morning, {user?.name || "Doctor"} 👋
               </h1>
-              <p className="text-gray-500 mt-1">Here's what's happening in your clinic today.</p>
+              <p className="text-gray-600 mt-1">Here's what's happening in your clinic today.</p>
             </div>
-            <button className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 bg-white shrink-0">
-              <Calendar size={15} />
-              {dateLabel}
-            </button>
+            <LiveClock />
           </div>
 
           {/* Stat cards */}
@@ -68,7 +64,7 @@ export default function DoctorDashboard() {
           </div>
 
           {/* Middle row: Schedule / Queue / Patient Overview + Notifications */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6 items-start">
             <div className="lg:col-span-1">
               <TodaysSchedule />
             </div>
@@ -82,7 +78,7 @@ export default function DoctorDashboard() {
           </div>
 
           {/* Bottom row: Upcoming Appointments / Recent Prescriptions / Availability */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6 items-start">
             <div className="lg:col-span-1">
               <UpcomingAppointments />
             </div>
