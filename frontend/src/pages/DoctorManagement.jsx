@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar";
 import Topbar from "../components/dashboard/Topbar";
 import DoctorFilters from "../components/doctor-management/DoctorFilters";
 import DoctorTable from "../components/doctor-management/DoctorTable";
 import DoctorFormModal from "../components/doctor-management/DoctorFormModal";
 import DoctorViewModal from "../components/doctor-management/DoctorViewModal";
-import { initialDoctors } from "../data/doctorManagementData";
+import {
+  getDoctors, createDoctor, updateDoctor, deleteDoctor, toggleDoctorStatus,
+} from "../api/doctorApi";
 
 export default function DoctorManagement() {
-  const [doctors, setDoctors] = useState(initialDoctors);
+  const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [department, setDepartment] = useState("");
   const [status, setStatus] = useState("");
@@ -17,51 +19,70 @@ export default function DoctorManagement() {
   const [formModal, setFormModal] = useState(null);
   const [viewDoctor, setViewDoctor] = useState(null);
 
-  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("sutrasync_user") || "null");
 
-  useEffect(() => {
-    if (location.state?.openAdd) {
-      setFormModal({ mode: "add", doctor: null });
+  const fetchDoctors = async () => {
+    try {
+      const res = await getDoctors();
+      setDoctors(res.data);
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to load doctors");
+    } finally {
+      setLoading(false);
     }
-  }, [location.state]);
+  };
+
+  useEffect(() => {
+    fetchDoctors();
+  }, []);
 
   const filteredDoctors = doctors.filter((d) => {
     const matchesSearch =
       !search ||
       d.name.toLowerCase().includes(search.toLowerCase()) ||
-      d.id.toLowerCase().includes(search.toLowerCase()) ||
+      d.doctorId.toLowerCase().includes(search.toLowerCase()) ||
       d.email.toLowerCase().includes(search.toLowerCase());
     const matchesDept = !department || d.department === department;
     const matchesStatus = !status || d.status === status;
     return matchesSearch && matchesDept && matchesStatus;
   });
 
-  const handleSaveDoctor = (doctorData) => {
-    setDoctors((prev) => {
-      const exists = prev.some((d) => d.id === doctorData.id);
-      return exists
-        ? prev.map((d) => (d.id === doctorData.id ? doctorData : d))
-        : [...prev, doctorData];
-    });
+  const handleSaveDoctor = async (doctorData) => {
+    try {
+      if (doctorData._id) {
+        const res = await updateDoctor(doctorData._id, doctorData);
+        setDoctors((prev) => prev.map((d) => (d._id === res.data._id ? res.data : d)));
+      } else {
+        const res = await createDoctor(doctorData);
+        setDoctors((prev) => [res.data, ...prev]);
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to save doctor");
+    }
   };
 
-  const handleToggleStatus = (doc) => {
-    setDoctors((prev) =>
-      prev.map((d) =>
-        d.id === doc.id ? { ...d, status: d.status === "Active" ? "Inactive" : "Active" } : d
-      )
-    );
+  const handleToggleStatus = async (doc) => {
+    try {
+      const res = await toggleDoctorStatus(doc._id);
+      setDoctors((prev) => prev.map((d) => (d._id === res.data._id ? res.data : d)));
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to update status");
+    }
   };
 
   const handleResetPassword = (doc) => {
     const tempPassword = Math.random().toString(36).slice(-8);
-    alert(`New temporary password for ${doc.name}: ${tempPassword}\n(Share this securely with the doctor.)`);
+    alert(`New temporary password for ${doc.name}: ${tempPassword}\n(Backend password-reset endpoint not yet built — this is a placeholder.)`);
   };
 
-  const handleDelete = (doc) => {
+  const handleDelete = async (doc) => {
     if (confirm(`Delete ${doc.name}'s profile? This cannot be undone.`)) {
-      setDoctors((prev) => prev.filter((d) => d.id !== doc.id));
+      try {
+        await deleteDoctor(doc._id);
+        setDoctors((prev) => prev.filter((d) => d._id !== doc._id));
+      } catch (err) {
+        alert(err.response?.data?.message || "Failed to delete doctor");
+      }
     }
   };
 
@@ -88,14 +109,20 @@ export default function DoctorManagement() {
             onAddDoctor={() => setFormModal({ mode: "add", doctor: null })}
           />
 
-          <DoctorTable
-            doctors={filteredDoctors}
-            onView={setViewDoctor}
-            onEdit={(doc) => setFormModal({ mode: "edit", doctor: doc })}
-            onToggleStatus={handleToggleStatus}
-            onResetPassword={handleResetPassword}
-            onDelete={handleDelete}
-          />
+          {loading ? (
+            <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400 text-sm">
+              Loading doctors...
+            </div>
+          ) : (
+            <DoctorTable
+              doctors={filteredDoctors}
+              onView={setViewDoctor}
+              onEdit={(doc) => setFormModal({ mode: "edit", doctor: doc })}
+              onToggleStatus={handleToggleStatus}
+              onResetPassword={handleResetPassword}
+              onDelete={handleDelete}
+            />
+          )}
         </main>
       </div>
 
