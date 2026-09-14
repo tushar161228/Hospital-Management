@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Mail, Phone, Lock } from "lucide-react";
 import logo from "../../assets/logo.png";
+import { signupUser } from "../../api/authApi";
 
 export default function Signup() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -24,7 +26,7 @@ export default function Signup() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) {
       alert("Passwords do not match");
@@ -34,8 +36,22 @@ export default function Signup() {
       alert("Please agree to the Staff Policies");
       return;
     }
-    alert("Account created successfully!");
-    navigate("/login");
+
+    setLoading(true);
+    try {
+      await signupUser({
+        name: form.fullName,
+        email: form.email,
+        password: form.password,
+        role: form.role === "admin" ? "admin" : "doctor",
+      });
+      alert("Account created successfully!");
+      navigate("/login");
+    } catch (err) {
+      alert(err.response?.data?.message || "Signup failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -111,7 +127,6 @@ export default function Signup() {
               <option value="">Select Role</option>
               <option value="admin">Admin</option>
               <option value="doctor">Doctor</option>
-              <option value="nurse">Nurse</option>
             </select>
           </div>
 
@@ -176,9 +191,10 @@ export default function Signup() {
 
           <button
             type="submit"
-            className="w-full bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition"
+            disabled={loading}
+            className="w-full bg-blue-700 text-white rounded-lg py-3 font-semibold hover:bg-blue-800 transition disabled:opacity-60"
           >
-            Create Account
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 

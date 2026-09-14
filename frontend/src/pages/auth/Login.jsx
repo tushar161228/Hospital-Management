@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import logo from "../../assets/logo.png";
+import { loginUser } from "../../api/authApi";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -9,27 +10,34 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     if (!email || !password) {
-      alert("Please enter email and password");
+      setError("Please enter email and password");
       return;
     }
 
-    const roleLabels = { admin: "Admin", doctor: "Doctor" };
-    const nameFromEmail = email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-    const displayName = role === "doctor" ? `Dr. ${nameFromEmail}` : "Admin User";
+    setLoading(true);
+    try {
+      const res = await loginUser({ email, password, role });
+      const { token, user } = res.data;
 
-    localStorage.setItem(
-      "sutrasync_user",
-      JSON.stringify({ name: displayName, role: roleLabels[role], email })
-    );
+      localStorage.setItem("sutrasync_token", token);
+      localStorage.setItem("sutrasync_user", JSON.stringify(user));
 
-    if (role === "admin") {
-      navigate("/dashboard");
-    } else if (role === "doctor") {
-      navigate("/doctor-dashboard");
+      if (role === "admin") {
+        navigate("/dashboard");
+      } else if (role === "doctor") {
+        navigate("/doctor-dashboard");
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,6 +73,12 @@ export default function Login() {
             </button>
           ))}
         </div>
+
+        {error && (
+          <div className="bg-red-50 text-red-600 text-sm rounded-lg px-3 py-2 mb-4">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -113,9 +127,10 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition"
+            disabled={loading}
+            className="w-full bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition disabled:opacity-60"
           >
-            Sign In
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
