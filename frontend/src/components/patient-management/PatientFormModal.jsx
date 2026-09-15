@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import {
-  bloodGroups,
-  genders,
-  generatePatientId,
-} from "../../data/patientManagementData";
+import { bloodGroups, genders } from "../../data/patientManagementData";
 import { departments, initialDoctors } from "../../data/doctorManagementData";
 
 const emptyForm = {
@@ -42,32 +38,26 @@ export default function PatientFormModal({
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name || !form.age || !form.gender || !form.phone) {
       alert("Please fill all required fields");
       return;
     }
 
-    const today = new Date().toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-
-    if (mode === "add") {
-      const newPatient = {
-        ...form,
-        id: generatePatientId(existingPatients),
-        age: Number(form.age),
-        registeredOn: today,
-        lastVisit: today,
-      };
-      onSave(newPatient);
-    } else {
-      onSave({ ...form, age: Number(form.age) });
+    setSaving(true);
+    try {
+      if (mode === "add") {
+        await onSave({ ...form, age: Number(form.age) });
+      } else {
+        await onSave({ ...patient, ...form, age: Number(form.age) });
+      }
+      onClose();
+    } finally {
+      setSaving(false);
     }
-    onClose();
   };
 
   return (

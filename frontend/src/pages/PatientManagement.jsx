@@ -1,15 +1,21 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar";
 import Topbar from "../components/dashboard/Topbar";
 import PatientFilters from "../components/patient-management/PatientFilters";
 import PatientTable from "../components/patient-management/PatientTable";
 import PatientFormModal from "../components/patient-management/PatientFormModal";
 import PatientViewModal from "../components/patient-management/PatientViewModal";
-import { initialPatients } from "../data/patientManagementData";
+import {
+  getPatients,
+  createPatient,
+  updatePatient,
+  deletePatient,
+  togglePatientStatus,
+} from "../api/patientApi";
 
 export default function PatientManagement() {
-  const [patients, setPatients] = useState(initialPatients);
+  const [patients, setPatients] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [department, setDepartment] = useState("");
   const [status, setStatus] = useState("");
@@ -17,46 +23,69 @@ export default function PatientManagement() {
   const [formModal, setFormModal] = useState(null);
   const [viewPatient, setViewPatient] = useState(null);
 
-  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("sutrasync_user") || "null");
 
-  useEffect(() => {
-    if (location.state?.openAdd) {
-      setFormModal({ mode: "add", patient: null });
+  const fetchPatients = async () => {
+    try {
+      const res = await getPatients();
+      setPatients(res.data);
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to load patients");
+    } finally {
+      setLoading(false);
     }
-  }, [location.state]);
+  };
+
+  useEffect(() => {
+    fetchPatients();
+  }, []);
 
   const filteredPatients = patients.filter((p) => {
     const matchesSearch =
       !search ||
       p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.id.toLowerCase().includes(search.toLowerCase()) ||
+      p.patientId.toLowerCase().includes(search.toLowerCase()) ||
       p.phone.includes(search);
     const matchesDept = !department || p.department === department;
     const matchesStatus = !status || p.status === status;
     return matchesSearch && matchesDept && matchesStatus;
   });
 
-  const handleSavePatient = (patientData) => {
-    setPatients((prev) => {
-      const exists = prev.some((p) => p.id === patientData.id);
-      return exists
-        ? prev.map((p) => (p.id === patientData.id ? patientData : p))
-        : [...prev, patientData];
-    });
+  const handleSavePatient = async (patientData) => {
+    try {
+      if (patientData._id) {
+        const res = await updatePatient(patientData._id, patientData);
+        setPatients((prev) =>
+          prev.map((p) => (p._id === res.data._id ? res.data : p)),
+        );
+      } else {
+        const res = await createPatient(patientData);
+        setPatients((prev) => [res.data, ...prev]);
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to save patient");
+    }
   };
 
-  const handleToggleStatus = (patient) => {
-    setPatients((prev) =>
-      prev.map((p) =>
-        p.id === patient.id ? { ...p, status: p.status === "Active" ? "Inactive" : "Active" } : p
-      )
-    );
+  const handleToggleStatus = async (patient) => {
+    try {
+      const res = await togglePatientStatus(patient._id);
+      setPatients((prev) =>
+        prev.map((p) => (p._id === res.data._id ? res.data : p)),
+      );
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to update status");
+    }
   };
 
-  const handleDelete = (patient) => {
+  const handleDelete = async (patient) => {
     if (confirm(`Delete ${patient.name}'s profile? This cannot be undone.`)) {
-      setPatients((prev) => prev.filter((p) => p.id !== patient.id));
+      try {
+        await deletePatient(patient._id);
+        setPatients((prev) => prev.filter((p) => p._id !== patient._id));
+      } catch (err) {
+        alert(err.response?.data?.message || "Failed to delete patient");
+      }
     }
   };
 
@@ -73,8 +102,12 @@ export default function PatientManagement() {
 
         <main className="p-6">
           <div className="mb-5">
-            <h1 className="text-2xl font-bold text-gray-800">Patient Management</h1>
-            <p className="text-sm text-gray-400 mt-0.5">Home &gt; Patient Management</p>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Patient Management
+            </h1>
+            <p className="text-sm text-gray-400 mt-0.5">
+              Home &gt; Patient Management
+            </p>
           </div>
 
           <PatientFilters
@@ -87,14 +120,20 @@ export default function PatientManagement() {
             onAddPatient={() => setFormModal({ mode: "add", patient: null })}
           />
 
-          <PatientTable
-            patients={filteredPatients}
-            onView={setViewPatient}
-            onEdit={(p) => setFormModal({ mode: "edit", patient: p })}
-            onToggleStatus={handleToggleStatus}
-            onDelete={handleDelete}
-            onViewRecords={handleViewRecords}
-          />
+          {loading ? (
+            <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400 text-sm">
+              Loading patients...
+            </div>
+          ) : (
+            <PatientTable
+              patients={filteredPatients}
+              onView={setViewPatient}
+              onEdit={(p) => setFormModal({ mode: "edit", patient: p })}
+              onToggleStatus={handleToggleStatus}
+              onDelete={handleDelete}
+              onViewRecords={handleViewRecords}
+            />
+          )}
         </main>
       </div>
 
@@ -109,7 +148,10 @@ export default function PatientManagement() {
       )}
 
       {viewPatient && (
-        <PatientViewModal patient={viewPatient} onClose={() => setViewPatient(null)} />
+        <PatientViewModal
+          patient={viewPatient}
+          onClose={() => setViewPatient(null)}
+        />
       )}
     </div>
   );
